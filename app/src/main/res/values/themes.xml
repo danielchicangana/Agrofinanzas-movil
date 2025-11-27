@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#000000</item> <!-- Fondo negro -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item> <!-- Tu logo -->
+        <item name="windowSplashScreenAnimationDuration">1000</item> <!-- 1 segundo -->
+        <item name="postSplashScreenTheme">@style/Theme.Agrofinanzas</item> <!-- Tema normal -->
+    </style>
+
+    <style name="Theme.Agrofinanzas" parent="android:Theme.Material.Light.NoActionBar" />
+
+</resources>
