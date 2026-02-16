@@ -1,4 +1,4 @@
-package Screen
+package com.example.agrofinanzas.screens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,7 +8,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -21,17 +23,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.agrofinanzas.R // Asegúrate de que esta ruta sea correcta
+import com.example.agrofinanzas.R
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = viewModel()
+) {
 
-    var nombre by remember { mutableStateOf("") }
-    var correo by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
 
-    // Estado para permitir el desplazamiento si el contenido no cabe en la pantalla
     val scrollState = rememberScrollState()
 
     Box(
@@ -44,7 +48,7 @@ fun RegisterScreen(navController: NavController) {
             )
     ) {
 
-        // ====== FONDO ======
+        // Fondo desenfocado
         Image(
             painter = painterResource(id = R.drawable.fondo_cafe),
             contentDescription = null,
@@ -55,20 +59,18 @@ fun RegisterScreen(navController: NavController) {
             alpha = 0.2f
         )
 
-        // Columna principal con desplazamiento y centrado
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState) // Permite el desplazamiento vertical
-                .padding(horizontal = 24.dp) // Añade padding horizontal para no tocar los bordes
-                .wrapContentSize(Alignment.Center) // Centra el contenido si la pantalla es más grande
+                .verticalScroll(scrollState)
+                .padding(horizontal = 24.dp)
+                .wrapContentSize(Alignment.Center)
         ) {
 
-            // ====== TARJETA PRINCIPAL (Ahora solo ocupa un ancho máximo) ======
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f) // Ocupa el 90% del ancho disponible
-                    .align(Alignment.CenterHorizontally) // Centra la tarjeta horizontalmente
+                    .fillMaxWidth(0.9f)
+                    .align(Alignment.CenterHorizontally)
                     .background(
                         color = Color.White.copy(alpha = 0.06f),
                         shape = RoundedCornerShape(20.dp)
@@ -89,7 +91,7 @@ fun RegisterScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "Registro",
+                        text = "Iniciar Sesión",
                         color = Color(0xFF18D92E),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
@@ -98,18 +100,8 @@ fun RegisterScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(20.dp))
 
                     OutlinedTextField(
-                        value = nombre,
-                        onValueChange = { nombre = it },
-                        label = { Text("Ingrese su nombre") },
-                        // Ahora ocupa el 100% del ancho de la tarjeta
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    OutlinedTextField(
-                        value = correo,
-                        onValueChange = { correo = it },
+                        value = email,
+                        onValueChange = { viewModel.onEmailChange(it) },
                         label = { Text("Correo") },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -118,7 +110,7 @@ fun RegisterScreen(navController: NavController) {
 
                     OutlinedTextField(
                         value = password,
-                        onValueChange = { password = it },
+                        onValueChange = { viewModel.onPasswordChange(it) },
                         label = { Text("Contraseña") },
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth()
@@ -128,7 +120,11 @@ fun RegisterScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            // AQUÍ LLAMAS TU API
+                            if (viewModel.login()) {
+                                navController.navigate("screens/home") {
+                                    popUpTo("screens/login") { inclusive = true }
+                                }
+                            }
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
@@ -136,22 +132,26 @@ fun RegisterScreen(navController: NavController) {
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Registrarse", color = Color.White)
+                        Text("Entrar", color = Color.White)
                     }
 
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    TextButton(onClick = {
-                        navController.navigate("login")
-                    }) {
-                        Text("¿Ya tienes cuenta? Inicia sesión aquí",
+                    TextButton(
+                        onClick = {
+                            navController.navigate("screens/register")
+                        }
+                    ) {
+                        Text(
+                            "¿No tienes cuenta? Regístrate aquí",
                             color = Color(0xFF18D92E),
-                            fontSize = 14.sp)
+                            fontSize = 14.sp
+                        )
                     }
                 }
             }
-            // Espacio extra al final para mejorar el 'scroll' en móvil
+
             Spacer(modifier = Modifier.height(30.dp))
-            }
         }
+    }
 }

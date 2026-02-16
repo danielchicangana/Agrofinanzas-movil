@@ -1,5 +1,4 @@
-package components
-
+package com.example.agrofinanzas.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,11 +20,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 fun BottomBar(navController: NavController) {
 
     val items = listOf(
-        "home" to Icons.Default.Home,
-        "finanzas" to Icons.Default.AttachMoney,
-        "agronomia" to Icons.Default.Eco,
-        "comentarios" to Icons.Default.Chat,
-        "perfil" to Icons.Default.Person
+        "screens/home" to Icons.Default.Home,
+        "screens/finanzas" to Icons.Default.AttachMoney,
+        "screens/cultivos" to Icons.Default.Eco,
+        "screens/Comentarios" to Icons.Default.Chat,
+        "screens/perfil" to Icons.Default.Person
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -61,9 +60,14 @@ fun BottomBar(navController: NavController) {
                 ) {
                     IconButton(
                         onClick = {
-                            navController.navigate(route) {
-                                popUpTo("home")
-                                launchSingleTop = true
+                            if (currentRoute != route) {
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     ) {
