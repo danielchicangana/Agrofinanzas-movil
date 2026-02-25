@@ -4,33 +4,41 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+data class RegisterUiState(
+    val nombre: String = "",
+    val correo: String = "",
+    val password: String = "",
+    val confirmarPassword: String = ""
+)
 
 class RegisterViewModel : ViewModel() {
 
-    private val _nombre = MutableStateFlow("")
-    val nombre: StateFlow<String> = _nombre.asStateFlow()
-
-    private val _correo = MutableStateFlow("")
-    val correo: StateFlow<String> = _correo.asStateFlow()
-
-    private val _password = MutableStateFlow("")
-    val password: StateFlow<String> = _password.asStateFlow()
+    private val _uiState = MutableStateFlow(RegisterUiState())
+    val uiState: StateFlow<RegisterUiState> = _uiState.asStateFlow()
 
     fun onNombreChange(value: String) {
-        _nombre.value = value
+        _uiState.update { it.copy(nombre = value) }
     }
 
     fun onCorreoChange(value: String) {
-        _correo.value = value
+        _uiState.update { it.copy(correo = value) }
     }
 
     fun onPasswordChange(value: String) {
-        _password.value = value
+        _uiState.update { it.copy(password = value) }
     }
 
-    fun register(): Boolean {
-        return _nombre.value.isNotBlank() &&
-                _correo.value.isNotBlank() &&
-                _password.value.length >= 6
+    fun onConfirmarPasswordChange(value: String) {
+        _uiState.update { it.copy(confirmarPassword = value) }
+    }
+
+    fun canContinue(): Boolean {
+        val state = _uiState.value
+        return state.nombre.isNotBlank() &&
+            state.correo.isNotBlank() &&
+            state.password.isNotBlank() &&
+            state.password == state.confirmarPassword
     }
 }

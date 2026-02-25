@@ -1,11 +1,23 @@
 package com.example.agrofinanzas.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Eco
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -15,16 +27,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.agrofinanzas.screens.AppRoutes
 
 @Composable
 fun BottomBar(navController: NavController) {
-
     val items = listOf(
-        "screens/home" to Icons.Default.Home,
-        "screens/finanzas" to Icons.Default.AttachMoney,
-        "screens/cultivos" to Icons.Default.Eco,
-        "screens/Comentarios" to Icons.Default.Chat,
-        "screens/perfil" to Icons.Default.Person
+        AppRoutes.Home to Icons.Default.Home,
+        AppRoutes.Finanzas to Icons.Default.AttachMoney,
+        AppRoutes.Cultivos to Icons.Default.Eco,
+        AppRoutes.Comentarios to Icons.Default.Chat,
+        AppRoutes.Perfil to Icons.Default.Person
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -43,19 +55,14 @@ fun BottomBar(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             items.forEach { (route, icon) ->
-
                 val selected = currentRoute == route
 
                 Box(
                     modifier = Modifier
                         .size(55.dp)
                         .clip(CircleShape)
-                        .background(
-                            if (selected) Color(0xFF18D92E)
-                            else Color.Transparent
-                        ),
+                        .background(if (selected) Color(0xFF18D92E) else Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
                     IconButton(
