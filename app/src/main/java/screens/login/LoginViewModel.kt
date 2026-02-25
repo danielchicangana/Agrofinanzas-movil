@@ -3,31 +3,33 @@ package com.example.agrofinanzas.screens.login
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+data class LoginUiState(
+    val email: String = "",
+    val password: String = "",
+    val rememberMe: Boolean = false
+)
 
 class LoginViewModel : ViewModel() {
 
-    private val _email = MutableStateFlow("")
-    val email = _email.asStateFlow()
-
-    private val _password = MutableStateFlow("")
-    val password = _password.asStateFlow()
-
-    private val _rememberMe = MutableStateFlow(false)
-    val rememberMe = _rememberMe.asStateFlow()
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState = _uiState.asStateFlow()
 
     fun onEmailChange(value: String) {
-        _email.value = value
+        _uiState.update { it.copy(email = value) }
     }
 
     fun onPasswordChange(value: String) {
-        _password.value = value
+        _uiState.update { it.copy(password = value) }
     }
 
     fun onRememberChange(value: Boolean) {
-        _rememberMe.value = value
+        _uiState.update { it.copy(rememberMe = value) }
     }
 
-    fun login(): Boolean {
-        return _email.value.isNotBlank() && _password.value.isNotBlank()
+    fun canContinue(): Boolean {
+        val state = _uiState.value
+        return state.email.isNotBlank() && state.password.isNotBlank()
     }
 }
